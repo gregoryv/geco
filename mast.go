@@ -13,9 +13,7 @@ import (
 	"github.com/gregoryv/nexus"
 )
 
-type GenConf struct {
-	FS *token.FileSet
-
+type Generator struct {
 	Package  string
 	Receiver string
 	Type     string
@@ -23,16 +21,16 @@ type GenConf struct {
 	prefix     string
 	errHandler string // e.g. Error or Fatal
 	p          *nexus.Printer
+	fs         *token.FileSet
 }
 
-func (me *GenConf) Generate(w io.Writer, filename string, src interface{}) error {
+func (me *Generator) Generate(w io.Writer, filename string, src interface{}) error {
 	fset := token.NewFileSet()
 	mode := parser.AllErrors | parser.ParseComments
 	file, err := parser.ParseFile(fset, filename, src, mode)
 	if err != nil {
 		return err
 	}
-	me.FS = fset
 	p, _ := nexus.NewPrinter(w)
 	p.Println("package", me.Package)
 	p.Println()
@@ -43,13 +41,21 @@ func (me *GenConf) Generate(w io.Writer, filename string, src interface{}) error
 		p.Printf("\t*%s\n", me.Type)
 		p.Println("}")
 		p.Println()
+
+		// add tut constructor
+		p.Printf("func (me *%s) tu(t *testing.T) *%s {\n", me.Type, me.Receiver)
+		p.Printf("\treturn &%s{T:t, %s: me}\n", me.Receiver, me.Type)
+		p.Println("}")
+		p.Println()
 	}
+
+	me.fs = fset
 	me.p = p
 	ast.Inspect(file, me.visit)
 	return nil
 }
 
-func (me *GenConf) visit(n ast.Node) bool {
+func (me *Generator) visit(n ast.Node) bool {
 	switch n := n.(type) {
 	case *ast.FuncDecl:
 		if n.Type.Results == nil { // skip
@@ -61,7 +67,7 @@ func (me *GenConf) visit(n ast.Node) bool {
 		if n.Recv == nil { // skip
 			return true
 		}
-		rname := sprintType(me.FS, n.Recv.List[0].Type)
+		rname := sprintType(me.fs, n.Recv.List[0].Type)
 		if rname != me.Type && rname != "*"+me.Type {
 			return true
 		}
@@ -76,7 +82,7 @@ func (me *GenConf) visit(n ast.Node) bool {
 	return true
 }
 
-func printFunc(p *nexus.Printer, n *ast.FuncDecl, me *GenConf) {
+func printFunc(p *nexus.Printer, n *ast.FuncDecl, me *Generator) {
 
 	p.Printf("func (me *%s) %s%s(", me.Receiver, me.prefix, n.Name)
 	// print params
@@ -89,7 +95,7 @@ func printFunc(p *nexus.Printer, n *ast.FuncDecl, me *GenConf) {
 		}
 
 		namedParam := fmt.Sprintf(
-			"%s %s", csv(args), sprintType(me.FS, field.Type),
+			"%s %s", csv(args), sprintType(me.fs, field.Type),
 		)
 		params = append(params, namedParam)
 	}
@@ -101,7 +107,7 @@ func printFunc(p *nexus.Printer, n *ast.FuncDecl, me *GenConf) {
 	var buf bytes.Buffer
 	sign, _ := nexus.NewPrinter(&buf)
 	for _, field := range n.Type.Results.List {
-		v := sprintType(me.FS, field.Type)
+		v := sprintType(me.fs, field.Type)
 		if v != "error" {
 			sign.Print(" ", v)
 		}

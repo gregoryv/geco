@@ -50,7 +50,7 @@ func main() {
 		log.Fatal("missing input file", seeHelp)
 	}
 
-	gc := tut.GenConf{
+	gc := tut.Generator{
 		Package:  pkg,
 		Receiver: rec,
 		Type:     typ,

@@ -11,7 +11,7 @@ import (
 )
 
 func TestGenerateShould(t *testing.T) {
-	gc := GenConf{
+	gc := Generator{
 		Package:    "x",
 		Receiver:   "tCar",
 		Type:       "Car",
