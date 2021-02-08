@@ -1,0 +1,66 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
+	"github.com/gregoryv/cmdline"
+	"github.com/gregoryv/nexus"
+	"github.com/gregoryv/tut"
+	"github.com/gregoryv/wolf"
+)
+
+func main() {
+	wolf.NewOSCmd()
+	log.SetFlags(0)
+
+	var (
+		cli     = cmdline.NewParser(os.Args...)
+		help    = cli.Flag("-h, --help")
+		pkg     = cli.Option("-p, --package").String("")
+		typ     = cli.Option("-t, --type").String("")
+		in      = cli.Option("-in, --input-file").String("")
+		outfile = "tut" + strings.ReplaceAll(in, ".go", "_test.go")
+		out     = cli.Option("-out, --output-file").String(outfile)
+		rec     = cli.Option("-rec, --receiver").String("tut" + typ)
+	)
+
+	seeHelp := fmt.Sprintf(", %s --help", os.Args[0])
+	switch {
+	case help:
+		cli.WriteUsageTo(os.Stdout)
+		p, _ := nexus.NewPrinter(os.Stdout)
+		p.Println("Example")
+		p.Println()
+		p.Println("//go:generate gentut -p mypkg -type Car -in cars.go > tutcars_test.go")
+		os.Exit(0)
+
+	case !cli.Ok():
+		log.Fatal(cli.Error(), seeHelp)
+
+	case pkg == "":
+		log.Fatal("missing package", seeHelp)
+
+	case typ == "":
+		log.Fatal("missing type", seeHelp)
+
+	case in == "":
+		log.Fatal("missing input file", seeHelp)
+	}
+
+	gc := tut.GenConf{
+		Package:  pkg,
+		Receiver: rec,
+		Type:     typ,
+	}
+	fh, err := os.Create(out)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer fh.Close()
+	if err := gc.Generate(fh, in, nil); err != nil {
+		log.Fatal(err)
+	}
+}
