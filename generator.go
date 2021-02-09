@@ -13,12 +13,12 @@ import (
 	"github.com/gregoryv/nexus"
 )
 
-func NewGeneratorFrom(pkg, rec, typ string, src interface{}) *Generator {
-	return NewGenerator(pkg, rec, typ, "", src)
+func NewGeneratorFrom(pkg, rec, typ string, src interface{}) *TUTGen {
+	return NewTUTGen(pkg, rec, typ, "", src)
 }
 
-func NewGenerator(pkg, rec, typ, filename string, src interface{}) *Generator {
-	return &Generator{
+func NewTUTGen(pkg, rec, typ, filename string, src interface{}) *TUTGen {
+	return &TUTGen{
 		Package:  pkg,
 		Receiver: rec,
 		Type:     typ,
@@ -27,7 +27,7 @@ func NewGenerator(pkg, rec, typ, filename string, src interface{}) *Generator {
 	}
 }
 
-type Generator struct {
+type TUTGen struct {
 	Package  string
 	Receiver string
 	Type     string
@@ -45,7 +45,7 @@ type Generator struct {
 // should/must test helper methods for any method that returns an
 // error.  Methods prefixed with should, use t.Error as error handler
 // and those prefixed with must use t.Fatal.
-func (me *Generator) Generate(w io.Writer) error {
+func (me *TUTGen) Generate(w io.Writer) error {
 	fset := token.NewFileSet()
 	mode := parser.AllErrors | parser.ParseComments
 	file, err := parser.ParseFile(fset, me.filename, me.src, mode)
@@ -80,7 +80,7 @@ func (me *Generator) Generate(w io.Writer) error {
 	return nil
 }
 
-func (me *Generator) visit(n ast.Node) bool {
+func (me *TUTGen) visit(n ast.Node) bool {
 	switch n := n.(type) {
 	case *ast.FuncDecl:
 		if n.Type.Results == nil { // skip
@@ -103,7 +103,7 @@ func (me *Generator) visit(n ast.Node) bool {
 	return true
 }
 
-func (me *Generator) printFunc(n *ast.FuncDecl, prefix, errhand string) {
+func (me *TUTGen) printFunc(n *ast.FuncDecl, prefix, errhand string) {
 	p := me.p
 	// method receiver and name
 	p.Printf("func (me *%s) %s%s(", me.Receiver, prefix, n.Name)

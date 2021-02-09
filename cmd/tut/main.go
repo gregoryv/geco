@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/gregoryv/cmdline"
-	"github.com/gregoryv/nexus"
 	"github.com/gregoryv/geco"
+	"github.com/gregoryv/nexus"
 	"github.com/gregoryv/wolf"
 )
 
@@ -55,7 +55,7 @@ func main() {
 		log.Fatal("missing input file", seeHelp)
 	}
 
-	gc := geco.NewGenerator(pkg, rec, typ, in, nil)
+	gc := geco.NewTUTGen(pkg, rec, typ, in, nil)
 	fh, err := os.Create(out)
 	if err != nil {
 		log.Fatal(err)
