@@ -1,28 +1,46 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
 	"testing"
 )
 
-func Test_run_gentest(t *testing.T) {
+func Test_gentut_to_stdout(t *testing.T) {
 	os.Chdir("./testdata")
-	defer os.RemoveAll("carsut_test.go")
-	out, err := exec.Command(
-		"go", "run", "..",
-		"-in", "cars.go", "-p", "testdata", "-t", "Car",
+	out, err := exec.Command("go", "run", "..",
+		"-in", "car.go", "-p", "testdata", "-t", "Car",
 	).CombinedOutput()
 	if err != nil {
 		t.Fatal(err, string(out))
 	}
+	got := string(out)
 
-	body, err := ioutil.ReadFile("carsut_test.go")
-	if err != nil {
-		t.Fatal(err, string(body))
+	// Default should write to stdout
+	if !strings.Contains(got, "package testdata") {
+		t.Error(got)
 	}
-	//t.Error(string(body))
+}
+
+func Test_gentut_to_file(t *testing.T) {
+	os.Chdir("./testdata")
+	out, err := exec.Command("go", "run", "..",
+		"-in", "car.go", "-p", "testdata", "-t", "Car", "-w",
+	).CombinedOutput()
+	if err != nil {
+		t.Fatal(err, string(out))
+	}
+	got := string(out)
+
+	// Default should not write to stdout
+	if strings.Contains(got, "package testdata") {
+		t.Error(got)
+	}
+	// File must be created
+	if err := os.Remove("carut_test.go"); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func Test_outFilename(t *testing.T) {

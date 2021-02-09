@@ -11,6 +11,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -34,6 +35,7 @@ func main() {
 		typ  = cli.Option("-t, --type").String("")
 		in   = cli.Option("-in, --input-file").String("")
 		rec  = cli.Option("-rec, --receiver").String(typ + "UnderTest")
+		w    = cli.Flag("-w, -write-to-out")
 		out  = cli.Option("-out, --output-file").String(outFilename(in))
 	)
 	if rec == typ {
@@ -48,11 +50,11 @@ func main() {
 		p.Println("Example")
 		p.Println()
 		p.Println(`
-//go:generate gentut --package mypkg --type Car --input-file cars.go
+//go:generate gentut --package mypkg --type Car --input-file car.go -w
 
 same as short version
 
-//go:generate gentut -p mypkg -t Car -in cars.go -out tutcars_test.go`)
+//go:generate gentut -p mypkg -t Car -in car.go -w`)
 		os.Exit(0)
 
 	case !cli.Ok():
@@ -66,14 +68,19 @@ same as short version
 
 	case in == "":
 		log.Fatal("missing input file", seeHelp)
+
 	}
 
-	gc := geco.NewTypeUnderTest(pkg, rec, typ, in, nil)
-	fh, err := os.Create(out)
-	if err != nil {
-		log.Fatal(err)
+	var fh io.WriteCloser = os.Stdout
+	if w {
+		var err error
+		fh, err = os.Create(out)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer fh.Close()
 	}
-	defer fh.Close()
+	gc := geco.NewTypeUnderTest(pkg, rec, typ, in, nil)
 	if err := gc.Generate(fh); err != nil {
 		log.Fatal(err)
 	}
