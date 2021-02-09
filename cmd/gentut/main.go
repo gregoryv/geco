@@ -14,6 +14,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -78,6 +79,7 @@ same as short version
 		if err != nil {
 			log.Fatal(err)
 		}
+		defer exec.Command("goimports", "-w", out).Run()
 		defer fh.Close()
 	}
 	gc := geco.NewTypeUnderTest(pkg, rec, typ, in, nil)
