@@ -8,7 +8,7 @@ import (
 
 	"github.com/gregoryv/cmdline"
 	"github.com/gregoryv/nexus"
-	"github.com/gregoryv/tut"
+	"github.com/gregoryv/geco"
 	"github.com/gregoryv/wolf"
 )
 
@@ -22,9 +22,9 @@ func main() {
 		pkg   = cli.Option("-p, --package").String("")
 		typ   = cli.Option("-t, --type").String("")
 		in    = cli.Option("-in, --input-file").String("")
-		tfile = "tut" + strings.ReplaceAll(in, ".go", "_test.go")
+		tfile = "geco" + strings.ReplaceAll(in, ".go", "_test.go")
 		out   = cli.Option("-out, --output-file").String(tfile)
-		rec   = cli.Option("-rec, --receiver").String("tut" + typ)
+		rec   = cli.Option("-rec, --receiver").String("geco" + typ)
 	)
 
 	seeHelp := fmt.Sprintf(", %s --help", os.Args[0])
@@ -34,11 +34,11 @@ func main() {
 		p, _ := nexus.NewPrinter(os.Stdout)
 		p.Println("Example")
 		p.Println()
-		p.Println("//go:generate tut --package mypkg --type Car --input-file cars.go")
+		p.Println("//go:generate geco --package mypkg --type Car --input-file cars.go")
 		p.Println()
 		p.Println("same as short version")
 		p.Println()
-		p.Println("//go:generate tut -p mypkg -t Car -in cars.go -out tutcars_test.go")
+		p.Println("//go:generate geco -p mypkg -t Car -in cars.go -out tutcars_test.go")
 
 		os.Exit(0)
 
@@ -55,7 +55,7 @@ func main() {
 		log.Fatal("missing input file", seeHelp)
 	}
 
-	gc := tut.NewGenerator(pkg, rec, typ, in, nil)
+	gc := geco.NewGenerator(pkg, rec, typ, in, nil)
 	fh, err := os.Create(out)
 	if err != nil {
 		log.Fatal(err)

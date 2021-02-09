@@ -1,1 +1,1 @@
-tut - Package for generating type under test adapters
+Package geco provides Golang code generators

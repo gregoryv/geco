@@ -1,4 +1,4 @@
-package tut
+package geco
 
 import (
 	"bytes"
@@ -67,7 +67,7 @@ func (me *Generator) Generate(w io.Writer) error {
 		p.Println()
 	}
 
-	// Add tut(testing.T) constructor on the existing type, conflict
+	// Add geco(testing.T) constructor on the existing type, conflict
 	// could occur.
 	p.Printf("func (me *%s) tu(t *testing.T) *%s {\n", me.Type, me.Receiver)
 	p.Printf("\treturn &%s{T:t, %s: me}\n", me.Receiver, me.Type)
