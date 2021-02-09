@@ -34,20 +34,23 @@ func (me *Generator) Generate(w io.Writer, filename string, src interface{}) err
 	p, _ := nexus.NewPrinter(w)
 	p.Println("package", me.Package)
 	p.Println()
+	p.Println(`import "testing"`)
+	p.Println()
 
+	// It's possible to reuse the existing type as the receiver.
 	if me.Receiver != me.Type {
 		p.Printf("type %s struct {\n", me.Receiver)
 		p.Println("\t*testing.T")
 		p.Printf("\t*%s\n", me.Type)
 		p.Println("}")
 		p.Println()
-
-		// add tut constructor
-		p.Printf("func (me *%s) tu(t *testing.T) *%s {\n", me.Type, me.Receiver)
-		p.Printf("\treturn &%s{T:t, %s: me}\n", me.Receiver, me.Type)
-		p.Println("}")
-		p.Println()
 	}
+
+	// add tut constructor on the existing type, conflict could occur.
+	p.Printf("func (me *%s) tu(t *testing.T) *%s {\n", me.Type, me.Receiver)
+	p.Printf("\treturn &%s{T:t, %s: me}\n", me.Receiver, me.Type)
+	p.Println("}")
+	p.Println()
 
 	me.fs = fset
 	me.p = p
