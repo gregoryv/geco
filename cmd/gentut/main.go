@@ -1,9 +1,20 @@
+/*
+Command gentut generates should- and must-prefixed methods handling
+errors during testing.
+
+Primary usecase is to enhance struct types that return an error with
+wrapper methods that use the *testing.T Error and Fatal handlers.
+
+
+*/
 package main
 
 import (
 	"fmt"
 	"log"
 	"os"
+	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/gregoryv/cmdline"
@@ -17,16 +28,18 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		cli   = cmdline.NewParser(os.Args...)
-		help  = cli.Flag("-h, --help")
-		pkg   = cli.Option("-p, --package").String("")
-		typ   = cli.Option("-t, --type").String("")
-		in    = cli.Option("-in, --input-file").String("")
-		tfile = "geco" + strings.ReplaceAll(in, ".go", "_test.go")
-		out   = cli.Option("-out, --output-file").String(tfile)
-		rec   = cli.Option("-rec, --receiver").String("tut" + typ)
+		cli  = cmdline.NewParser(os.Args...)
+		help = cli.Flag("-h, --help")
+		pkg  = cli.Option("-p, --package").String("")
+		typ  = cli.Option("-t, --type").String("")
+		in   = cli.Option("-in, --input-file").String("")
+		rec  = cli.Option("-rec, --receiver").String("tut" + typ)
+		out  = cli.Option("-out, --output-file").String(outFilename(in))
 	)
-
+	if rec == typ {
+		// don't overwrite existing file
+		out = "tut" + out
+	}
 	seeHelp := fmt.Sprintf(", %s --help", os.Args[0])
 	switch {
 	case help:
@@ -34,12 +47,12 @@ func main() {
 		p, _ := nexus.NewPrinter(os.Stdout)
 		p.Println("Example")
 		p.Println()
-		p.Println("//go:generate gentut --package mypkg --type Car --input-file cars.go")
-		p.Println()
-		p.Println("same as short version")
-		p.Println()
-		p.Println("//go:generate gentut -p mypkg -t Car -in cars.go -out tutcars_test.go")
+		p.Println(`
+//go:generate gentut --package mypkg --type Car --input-file cars.go
 
+same as short version
+
+//go:generate gentut -p mypkg -t Car -in cars.go -out tutcars_test.go`)
 		os.Exit(0)
 
 	case !cli.Ok():
@@ -64,4 +77,12 @@ func main() {
 	if err := gc.Generate(fh); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// outFilename returns from eg. name.go nameut_test.go
+func outFilename(in string) string {
+	dir := filepath.Dir(in)
+	file := filepath.Base(in)
+	file = strings.Replace(file, ".go", "ut_test.go", 1)
+	return path.Join(dir, file)
 }
