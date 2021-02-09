@@ -20,10 +20,9 @@ func Test_run_gentest(t *testing.T) {
 
 	body, err := ioutil.ReadFile("carsut_test.go")
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, string(body))
 	}
-	t.Error(string(body))
-
+	//t.Error(string(body))
 }
 
 func Test_outFilename(t *testing.T) {

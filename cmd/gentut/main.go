@@ -33,7 +33,7 @@ func main() {
 		pkg  = cli.Option("-p, --package").String("")
 		typ  = cli.Option("-t, --type").String("")
 		in   = cli.Option("-in, --input-file").String("")
-		rec  = cli.Option("-rec, --receiver").String("tut" + typ)
+		rec  = cli.Option("-rec, --receiver").String(typ + "UnderTest")
 		out  = cli.Option("-out, --output-file").String(outFilename(in))
 	)
 	if rec == typ {

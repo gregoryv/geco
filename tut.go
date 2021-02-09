@@ -65,7 +65,7 @@ func (me *TypeUnderTest) Generate(w io.Writer) error {
 
 	// Add geco(testing.T) constructor on the existing type, conflict
 	// could occur.
-	p.Printf("func (me *%s) tu(t *testing.T) *%s {\n", me.Type, me.Receiver)
+	p.Printf("func (me *%s) UnderTest(t *testing.T) *%s {\n", me.Type, me.Receiver)
 	p.Printf("\treturn &%s{T:t, %s: me}\n", me.Receiver, me.Type)
 	p.Println("}")
 	p.Println()

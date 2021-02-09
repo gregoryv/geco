@@ -11,7 +11,7 @@ import (
 )
 
 func TestGenerateShould(t *testing.T) {
-	gc := NewTypeUnderTest("x", "tCar", "Car", "", []byte(src))
+	gc := NewTypeUnderTest("x", "CarUnderTest", "Car", "", []byte(src))
 	var buf bytes.Buffer
 	gc.Generate(&buf)
 
@@ -24,6 +24,7 @@ func TestGenerateShould(t *testing.T) {
 		"shouldWorks",
 		"shouldServe(w *http.Request)",
 		"shouldYWorks(a, b int, v string)",
+		") UnderTest(t *testing.T) *CarUnderTest",
 
 		"err := me.Serve(w)",
 		"err := me.Works()",
