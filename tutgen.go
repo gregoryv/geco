@@ -13,8 +13,8 @@ import (
 	"github.com/gregoryv/nexus"
 )
 
-func NewTUTGen(pkg, rec, typ, filename string, src interface{}) *TUTGen {
-	return &TUTGen{
+func NewTypeUnderTest(pkg, rec, typ, filename string, src interface{}) *TypeUnderTest {
+	return &TypeUnderTest{
 		Package:  pkg,
 		Receiver: rec,
 		Type:     typ,
@@ -23,7 +23,7 @@ func NewTUTGen(pkg, rec, typ, filename string, src interface{}) *TUTGen {
 	}
 }
 
-type TUTGen struct {
+type TypeUnderTest struct {
 	Package  string
 	Receiver string
 	Type     string
@@ -41,7 +41,7 @@ type TUTGen struct {
 // should/must test helper methods for any method that returns an
 // error.  Methods prefixed with should, use t.Error as error handler
 // and those prefixed with must use t.Fatal.
-func (me *TUTGen) Generate(w io.Writer) error {
+func (me *TypeUnderTest) Generate(w io.Writer) error {
 	fset := token.NewFileSet()
 	mode := parser.AllErrors | parser.ParseComments
 	file, err := parser.ParseFile(fset, me.filename, me.src, mode)
@@ -76,7 +76,7 @@ func (me *TUTGen) Generate(w io.Writer) error {
 	return nil
 }
 
-func (me *TUTGen) visit(n ast.Node) bool {
+func (me *TypeUnderTest) visit(n ast.Node) bool {
 	switch n := n.(type) {
 	case *ast.FuncDecl:
 		if n.Type.Results == nil { // skip
@@ -99,7 +99,7 @@ func (me *TUTGen) visit(n ast.Node) bool {
 	return true
 }
 
-func (me *TUTGen) printFunc(n *ast.FuncDecl, prefix, errhand string) {
+func (me *TypeUnderTest) printFunc(n *ast.FuncDecl, prefix, errhand string) {
 	p := me.p
 	// method receiver and name
 	p.Printf("func (me *%s) %s%s(", me.Receiver, prefix, n.Name)
