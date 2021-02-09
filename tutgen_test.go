@@ -11,7 +11,7 @@ import (
 )
 
 func TestGenerateShould(t *testing.T) {
-	gc := NewGeneratorFrom("x", "tCar", "Car", []byte(src))
+	gc := NewTUTGen("x", "tCar", "Car", "", []byte(src))
 	var buf bytes.Buffer
 	gc.Generate(&buf)
 

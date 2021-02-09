@@ -13,10 +13,6 @@ import (
 	"github.com/gregoryv/nexus"
 )
 
-func NewGeneratorFrom(pkg, rec, typ string, src interface{}) *TUTGen {
-	return NewTUTGen(pkg, rec, typ, "", src)
-}
-
 func NewTUTGen(pkg, rec, typ, filename string, src interface{}) *TUTGen {
 	return &TUTGen{
 		Package:  pkg,
