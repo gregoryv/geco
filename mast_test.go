@@ -11,15 +11,9 @@ import (
 )
 
 func TestGenerateShould(t *testing.T) {
-	gc := Generator{
-		Package:    "x",
-		Receiver:   "tCar",
-		Type:       "Car",
-		prefix:     "should",
-		errHandler: "Error",
-	}
+	gc := NewGeneratorFrom("x", "tCar", "Car", []byte(src))
 	var buf bytes.Buffer
-	gc.Generate(&buf, "", []byte(src))
+	gc.Generate(&buf)
 
 	got := buf.String()
 	if strings.Contains(got, "shouldModel") {

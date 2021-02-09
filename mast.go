@@ -13,10 +13,27 @@ import (
 	"github.com/gregoryv/nexus"
 )
 
+func NewGeneratorFrom(pkg, rec, typ string, src interface{}) *Generator {
+	return NewGenerator(pkg, rec, typ, "", src)
+}
+
+func NewGenerator(pkg, rec, typ, filename string, src interface{}) *Generator {
+	return &Generator{
+		Package:  pkg,
+		Receiver: rec,
+		Type:     typ,
+		filename: filename,
+		src:      src,
+	}
+}
+
 type Generator struct {
 	Package  string
 	Receiver string
 	Type     string
+
+	filename string
+	src      interface{}
 
 	prefix     string
 	errHandler string // e.g. Error or Fatal
@@ -24,10 +41,14 @@ type Generator struct {
 	fs         *token.FileSet
 }
 
-func (me *Generator) Generate(w io.Writer, filename string, src interface{}) error {
+// Generate parses the given filename or src and generates a type with
+// should/must test helper methods for any method that returns an
+// error.  Methods prefixed with should, use t.Error as error handler
+// and those prefixed with must use t.Fatal.
+func (me *Generator) Generate(w io.Writer) error {
 	fset := token.NewFileSet()
 	mode := parser.AllErrors | parser.ParseComments
-	file, err := parser.ParseFile(fset, filename, src, mode)
+	file, err := parser.ParseFile(fset, me.filename, me.src, mode)
 	if err != nil {
 		return err
 	}
@@ -46,7 +67,8 @@ func (me *Generator) Generate(w io.Writer, filename string, src interface{}) err
 		p.Println()
 	}
 
-	// add tut constructor on the existing type, conflict could occur.
+	// Add tut(testing.T) constructor on the existing type, conflict
+	// could occur.
 	p.Printf("func (me *%s) tu(t *testing.T) *%s {\n", me.Type, me.Receiver)
 	p.Printf("\treturn &%s{T:t, %s: me}\n", me.Receiver, me.Type)
 	p.Println("}")
@@ -76,16 +98,16 @@ func (me *Generator) visit(n ast.Node) bool {
 		}
 		me.prefix = "should"
 		me.errHandler = "Error"
-		printFunc(me.p, n, me)
+		me.printFunc(me.p, n)
 
 		me.prefix = "must"
 		me.errHandler = "Fatal"
-		printFunc(me.p, n, me)
+		me.printFunc(me.p, n)
 	}
 	return true
 }
 
-func printFunc(p *nexus.Printer, n *ast.FuncDecl, me *Generator) {
+func (me *Generator) printFunc(p *nexus.Printer, n *ast.FuncDecl) {
 
 	p.Printf("func (me *%s) %s%s(", me.Receiver, me.prefix, n.Name)
 	// print params

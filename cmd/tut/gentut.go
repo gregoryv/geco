@@ -50,17 +50,13 @@ func main() {
 		log.Fatal("missing input file", seeHelp)
 	}
 
-	gc := tut.Generator{
-		Package:  pkg,
-		Receiver: rec,
-		Type:     typ,
-	}
+	gc := tut.NewGenerator(pkg, rec, typ, in, nil)
 	fh, err := os.Create(out)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer fh.Close()
-	if err := gc.Generate(fh, in, nil); err != nil {
+	if err := gc.Generate(fh); err != nil {
 		log.Fatal(err)
 	}
 }
