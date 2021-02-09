@@ -96,39 +96,34 @@ func (me *Generator) visit(n ast.Node) bool {
 		if rname != me.Type && rname != "*"+me.Type {
 			return true
 		}
-		me.prefix = "should"
-		me.errHandler = "Error"
-		me.printFunc(me.p, n)
 
-		me.prefix = "must"
-		me.errHandler = "Fatal"
-		me.printFunc(me.p, n)
+		me.printFunc(n, "should", "Error")
+		me.printFunc(n, "must", "Fatal")
 	}
 	return true
 }
 
-func (me *Generator) printFunc(p *nexus.Printer, n *ast.FuncDecl) {
+func (me *Generator) printFunc(n *ast.FuncDecl, prefix, errhand string) {
+	p := me.p
+	// method receiver and name
+	p.Printf("func (me *%s) %s%s(", me.Receiver, prefix, n.Name)
 
-	p.Printf("func (me *%s) %s%s(", me.Receiver, me.prefix, n.Name)
-	// print params
+	// method parameters
 	params := make([]string, 0)
-
 	for _, field := range n.Type.Params.List {
 		args := make([]string, 0)
 		for _, n := range field.Names {
 			args = append(args, fmt.Sprint(n))
 		}
-
 		namedParam := fmt.Sprintf(
 			"%s %s", csv(args), sprintType(me.fs, field.Type),
 		)
 		params = append(params, namedParam)
 	}
-
 	p.Print(csv(params))
 	p.Print(")")
 
-	// signature returns, except error
+	// signature returns values, except error
 	var buf bytes.Buffer
 	sign, _ := nexus.NewPrinter(&buf)
 	for _, field := range n.Type.Results.List {
@@ -151,7 +146,7 @@ func (me *Generator) printFunc(p *nexus.Printer, n *ast.FuncDecl) {
 	p.Printf("\t%s := me.%s(%s)\n", rv, n.Name, csv(args))
 	p.Println("\tif err != nil {")
 	p.Println("\t\tme.T.Helper()")
-	p.Printf("\t\tme.T.%s(err)\n", me.errHandler)
+	p.Printf("\t\tme.T.%s(err)\n", errhand)
 	p.Println("\t}")
 	l := len(n.Type.Results.List)
 	if l > 1 {
