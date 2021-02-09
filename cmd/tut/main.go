@@ -17,14 +17,14 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		cli     = cmdline.NewParser(os.Args...)
-		help    = cli.Flag("-h, --help")
-		pkg     = cli.Option("-p, --package").String("")
-		typ     = cli.Option("-t, --type").String("")
-		in      = cli.Option("-in, --input-file").String("")
-		outfile = "tut" + strings.ReplaceAll(in, ".go", "_test.go")
-		out     = cli.Option("-out, --output-file").String(outfile)
-		rec     = cli.Option("-rec, --receiver").String("tut" + typ)
+		cli   = cmdline.NewParser(os.Args...)
+		help  = cli.Flag("-h, --help")
+		pkg   = cli.Option("-p, --package").String("")
+		typ   = cli.Option("-t, --type").String("")
+		in    = cli.Option("-in, --input-file").String("")
+		tfile = "tut" + strings.ReplaceAll(in, ".go", "_test.go")
+		out   = cli.Option("-out, --output-file").String(tfile)
+		rec   = cli.Option("-rec, --receiver").String("tut" + typ)
 	)
 
 	seeHelp := fmt.Sprintf(", %s --help", os.Args[0])
@@ -34,7 +34,12 @@ func main() {
 		p, _ := nexus.NewPrinter(os.Stdout)
 		p.Println("Example")
 		p.Println()
-		p.Println("//go:generate gentut -p mypkg -type Car -in cars.go > tutcars_test.go")
+		p.Println("//go:generate tut --package mypkg --type Car --input-file cars.go")
+		p.Println()
+		p.Println("same as short version")
+		p.Println()
+		p.Println("//go:generate tut -p mypkg -t Car -in cars.go -out tutcars_test.go")
+
 		os.Exit(0)
 
 	case !cli.Ok():
