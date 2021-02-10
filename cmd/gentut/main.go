@@ -48,14 +48,15 @@ func main() {
 	case help:
 		cli.WriteUsageTo(os.Stdout)
 		p, _ := nexus.NewPrinter(os.Stdout)
-		p.Println("Example")
-		p.Println()
-		p.Println(`
-//go:generate gentut --package mypkg --type Car --input-file car.go -w
+		p.Println(`Example
+
+    gentut --package mypkg --type Car --input-file car.go -w
 
 same as short version
 
-//go:generate gentut -p mypkg -t Car -in car.go -w`)
+    gentut -p mypkg -t Car -in car.go -w
+
+will write the file carut_test.go with the type CarUnderTest.`)
 		os.Exit(0)
 
 	case !cli.Ok():

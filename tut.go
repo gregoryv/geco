@@ -24,9 +24,9 @@ func NewTypeUnderTest(pkg, rec, typ, filename string, src interface{}) *TypeUnde
 }
 
 type TypeUnderTest struct {
-	Package  string
-	Receiver string
-	Type     string
+	Package  string // the output package
+	Receiver string // the name of the tut type
+	Type     string // the type to scan for
 
 	filename string
 	src      interface{}
