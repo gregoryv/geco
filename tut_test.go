@@ -44,8 +44,6 @@ func TestGenerateShould(t *testing.T) {
 	}
 }
 
-// ----------------------------------------
-
 const src = `package example
 // todo: implement more
 func main() {}
@@ -61,6 +59,15 @@ func (me *Car) JustDoIt() { }
 func Model() error { return nil}
 func (me *Boat) FixMe() error { return nil }
 `
+
+func Test_Generate_errors(t *testing.T) {
+	gc := NewTypeUnderTest("x", "CarUnderTest", "Car", "no-suchfile", nil)
+	var buf bytes.Buffer
+	err := gc.Generate(&buf)
+	if err == nil {
+		t.Error("should fail when file not found")
+	}
+}
 
 // ----------------------------------------
 

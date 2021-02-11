@@ -10,6 +10,7 @@ case $extension in
         goimports -w $path
         ;;
 esac
+
 go test -coverprofile /tmp/c.out ./...
-uncover /tmp/c.out
+uncover -min 100 /tmp/c.out
 
