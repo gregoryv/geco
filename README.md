@@ -1,1 +1,1 @@
-Package [geco](https://pkg.go.dev/github.com/gregoryv/geco) provides Golang code generators
+Package [geco](https://gregoryv.github.io/geco) provides Golang code generators.
