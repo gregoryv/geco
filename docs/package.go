@@ -1,6 +1,9 @@
+// Package docs provides documentation for the geco module
 package docs
 
 import (
+	"strings"
+
 	. "github.com/gregoryv/web"
 	"github.com/gregoryv/web/files"
 	"github.com/gregoryv/web/toc"
@@ -35,7 +38,6 @@ func NewIndexPage() *Page {
 }
 
 func NewProjectArticle() interface{} {
-	nav := Nav(H4("Table of contents"))
 	article := Article(
 		H1("Geco - Golang Code Generators"),
 
@@ -43,31 +45,36 @@ func NewProjectArticle() interface{} {
 		prone repetitive work. This module provides an API and tools
 		to generate various helpful structures.`),
 
-		Div(Class("left"),
-			nav,
+		H2("Install"),
+		Pre(
+			Code(
+				"    go get -u ",
+				A(Href("https://github.com/gregoryv/geco"), "github.com/gregoryv/geco"),
+				"/...",
+			),
 		),
-		Div(Class("right"),
-			H2("Install"),
-			Pre(
-				Code(
-					"    go get -u ",
-					A(Href("https://github.com/gregoryv/geco"), "github.com/gregoryv/geco"),
-					"/...",
-				),
-			),
+		H2("API documentation"),
+		A(
+			Href("https://pkg.go.dev/github.com/gregoryv/geco"),
+			"github.com/gregoryv/geco",
+		),
 
-			H2("About"),
+		H2("About"),
 
-			Img(Src("me_circle.png"), Class("me")),
-			P(
-				`Written by `, A(Href("https://github.com/gregoryv"), gregory), Br(),
-				A(Href("#license"), "MIT License"),
-			),
+		Img(Src("me_circle.png"), Class("me")),
+		P(
+			`Written by `, A(Href("https://github.com/gregoryv"), gregory), Br(),
+			A(Href("#license"), "MIT License"),
 		),
 		Br(Attr("clear", "all")),
+
+		NewChangelog(),
+
 		H2("License"),
-		Pre(files.MustLoad("../LICENSE")),
+		strings.ReplaceAll(files.MustLoad("../LICENSE"), "\n", "<br>"),
 	)
-	toc.MakeTOC(nav, article, "h2", "h3")
+	toc.GenerateIDs(article, "h2", "h3")
+	toc.GenerateAnchors(article, "h2", "h3")
+
 	return article
 }

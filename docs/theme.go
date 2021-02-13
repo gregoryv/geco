@@ -27,25 +27,11 @@ func Theme() *CSS {
 	css.Style(".writtenby",
 		"float: right",
 	)
-	css.Style(".toc",
-		"font-weight: bold",
-	)
 	css.Style("p, li",
 		"font-family: 'Open Sans', sans-serif",
 	)
 	css.Style("p",
 		"line-height: 1.5em",
-	)
-	css.Style("nav>ul",
-		"list-style-type: none",
-		"line-height: 1.5em",
-	)
-	css.Style("li.h3",
-		"margin-left: 1em",
-		"list-style-type: none",
-	)
-	css.Style("td",
-		"vertical-align: top",
 	)
 	css.Style("img.me",
 		"float: left",
