@@ -84,7 +84,7 @@ will write the file carut_test.go with the type CarUnderTest.`)
 		defer fh.Close()
 	}
 	gc := geco.NewTypeUnderTest(pkg, rec, typ, in, nil)
-	if err := gc.Generate(fh); err != nil {
+	if _, err := gc.WriteTo(fh); err != nil {
 		log.Fatal(err)
 	}
 }

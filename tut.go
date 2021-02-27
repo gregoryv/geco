@@ -37,18 +37,18 @@ type TypeUnderTest struct {
 	fs         *token.FileSet
 }
 
-// Generate parses the given filename or src and generates a type with
+// WriteTo parses the given filename or src and generates a type with
 // should/must test helper methods for any method that returns an
 // error.  Methods prefixed with should, use t.Error as error handler
 // and those prefixed with must use t.Fatal.
-func (me *TypeUnderTest) Generate(w io.Writer) error {
+func (me *TypeUnderTest) WriteTo(w io.Writer) (int64, error) {
 	fset := token.NewFileSet()
 	mode := parser.AllErrors | parser.ParseComments
 	file, err := parser.ParseFile(fset, me.filename, me.src, mode)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	p, _ := nexus.NewPrinter(w)
+	p, perr := nexus.NewPrinter(w)
 	p.Println("package", me.Package)
 	p.Println()
 	p.Println(`import "testing"`)
@@ -73,7 +73,7 @@ func (me *TypeUnderTest) Generate(w io.Writer) error {
 	me.fs = fset
 	me.p = p
 	ast.Inspect(file, me.visit)
-	return nil
+	return p.Written, *perr
 }
 
 func (me *TypeUnderTest) visit(n ast.Node) bool {

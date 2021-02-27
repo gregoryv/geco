@@ -13,7 +13,7 @@ import (
 func TestGenerateShould(t *testing.T) {
 	gc := NewTypeUnderTest("x", "CarUnderTest", "Car", "", []byte(src))
 	var buf bytes.Buffer
-	gc.Generate(&buf)
+	gc.WriteTo(&buf)
 
 	got := buf.String()
 	if strings.Contains(got, "shouldModel") {
@@ -60,10 +60,10 @@ func Model() error { return nil}
 func (me *Boat) FixMe() error { return nil }
 `
 
-func Test_Generate_errors(t *testing.T) {
+func Test_WriteTo_errors(t *testing.T) {
 	gc := NewTypeUnderTest("x", "CarUnderTest", "Car", "no-suchfile", nil)
 	var buf bytes.Buffer
-	err := gc.Generate(&buf)
+	_, err := gc.WriteTo(&buf)
 	if err == nil {
 		t.Error("should fail when file not found")
 	}

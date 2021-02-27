@@ -10,7 +10,7 @@ import (
 )
 
 // Generate all documentation to the given directory.
-func Generate(dir string) error {
+func WriteTo(dir string) error {
 	index := NewIndexPage()
 	index.Filename = "index.html"
 	return index.SaveTo(dir)
