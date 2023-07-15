@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/gregoryv/cmdline"
-	"github.com/gregoryv/goref"
 )
 
 func main() {
@@ -66,7 +65,7 @@ func main() {
 
 		for _, file := range pkg.Files {
 			for _, typeName := range typeNames {
-				data, err := goref.MakeGetters(file, typeName)
+				data, err := MakeGetters(file, typeName)
 				if err != nil {
 					continue
 				}
