@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"go/parser"
+	"go/token"
 	"testing"
 )
 
@@ -14,7 +16,9 @@ Name string
 model string
 make string
 }`
-	out, _ := MakeGettersString(src, "Car")
+	fset := token.NewFileSet()
+	file, _ := parser.ParseFile(fset, "", src, 0)
+	out, _ := MakeGetters(file, "Car")
 	fmt.Print(string(out))
 	// output:
 	// func (c *Car) Model() string { return c.model }
@@ -31,12 +35,14 @@ model string
 make string
 }`
 
+	fset := token.NewFileSet()
+	file, _ := parser.ParseFile(fset, "", src, 0)
 	// wrong type
-	if _, err := MakeGettersString(src, "Nosuch"); err == nil {
+	if _, err := MakeGetters(file, "Nosuch"); err == nil {
 		t.Error("expect error on missing type")
 	}
 
-	if _, err := MakeGettersString(src, "Car"); err != nil {
+	if _, err := MakeGetters(file, "Car"); err != nil {
 		t.Error(err)
 	}
 }
