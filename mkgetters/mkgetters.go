@@ -1,3 +1,4 @@
+// Generates get methods for private struct fields
 package main
 
 import (
