@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"go/ast"
 	"go/format"
 	"go/parser"
 	"go/token"
@@ -16,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/gregoryv/cmdline"
+	"github.com/gregoryv/goref"
 )
 
 func main() {
@@ -68,11 +68,14 @@ func main() {
 
 		for _, file := range pkg.Files {
 			for _, typeName := range typeNames {
-				data, err := MakeGetters(fset, file, typeName)
-				if err != nil {
+				var c goref.MakeGet
+				c.SetOutput(&buf)
+				c.SetFileSet(fset)
+				c.SetFile(file)
+				c.SetTypeName(typeName)
+				if err := c.Run(); err != nil {
 					continue
 				}
-				buf.Write(data)
 				buf.WriteString("\n")
 			}
 		}
@@ -115,57 +118,4 @@ func main() {
 	default:
 		os.Stdout.Write(nice)
 	}
-}
-
-// MakeGetters returns generated getters for the given type.
-func MakeGetters(fset *token.FileSet, file *ast.File, typeName string) ([]byte, error) {
-	// find fields
-	var fields []*ast.Field
-	var name string
-	ast.Inspect(file, func(n ast.Node) bool {
-		switch n := n.(type) {
-		case *ast.Ident:
-			name = n.Name // save name
-
-		case *ast.StructType:
-			if name == typeName {
-				fields = n.Fields.List
-			}
-		}
-		return true
-	})
-
-	if len(fields) == 0 {
-		return nil, fmt.Errorf("type %s: not found", typeName)
-	}
-	var buf bytes.Buffer
-	for _, field := range fields {
-		name := field.Names[0].Name
-		if !isPrivate(name) {
-			continue
-		}
-		rcv := receiver(typeName)
-
-		fmt.Fprint(&buf, "func ")
-		fmt.Fprint(&buf, "(")
-		fmt.Fprint(&buf, rcv)
-		fmt.Fprint(&buf, " ")
-		fmt.Fprint(&buf, "*")
-		fmt.Fprint(&buf, typeName)
-		fmt.Fprint(&buf, ") ")
-		fmt.Fprint(&buf, makePublic(name))
-		fmt.Fprint(&buf, "() ")
-		format.Node(&buf, fset, field.Type)
-		fmt.Fprint(&buf, " ")
-		fmt.Fprint(&buf, "{ ")
-		fmt.Fprint(&buf, "return ")
-		fmt.Fprint(&buf, rcv)
-		fmt.Fprint(&buf, ".")
-		fmt.Fprint(&buf, name)
-		fmt.Fprint(&buf, " ")
-		fmt.Fprint(&buf, "}")
-		fmt.Fprintln(&buf)
-	}
-
-	return buf.Bytes(), nil
 }
