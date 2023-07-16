@@ -1,0 +1,8 @@
+// GENERATED, DO NOT EDIT!
+
+package main
+
+func (c *Car) SetModel(v string) { c.model = v }
+func (c *Car) SetMake(v int)     { c.make = v }
+
+func (b *Boat) SetColor(v int) { b.color = v }

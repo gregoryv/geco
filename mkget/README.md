@@ -1,6 +1,6 @@
-mkgetters generates get methods for private struct fields
+mkget generates get methods for private struct fields
 
-    $ mkgetters -h
+    $ mkget -h
     Usage: mkgetters [OPTIONS] [FILE]
     
     Options
@@ -8,14 +8,15 @@ mkgetters generates get methods for private struct fields
             CSV list of types
     
         -w, --write-file : ""
+        -a, --append-file : ""
         -h, --help
 
 Example
 
-    $ mkgetters -t Car ./testdata/example.go
-    // GENERATED!, DO NOT EDIT!
+    $ mkget -t Car
+    // GENERATED, DO NOT EDIT!
     
-    package testdata
+    package main
     
     func (c *Car) Model() string { return c.model }
     func (c *Car) Make() int     { return c.make }

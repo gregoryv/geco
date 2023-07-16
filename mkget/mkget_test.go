@@ -7,12 +7,12 @@ import (
 	"github.com/gregoryv/golden"
 )
 
-func Test_mkset(t *testing.T) {
+func Test_mkget(t *testing.T) {
 	out, _ := exec.Command("go", "generate", ".").Output()
 	golden.Assert(t, string(out))
 }
 
-//go:generate mkset -t Car,Boat
+//go:generate mkget -t Car
 type Car struct {
 	Name string
 

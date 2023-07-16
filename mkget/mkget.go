@@ -25,6 +25,7 @@ func main() {
 
 		types    = cli.Option("-t, --types", "CSV list of types").String("")
 		saveTo   = cli.Option("-w, --write-file").String("")
+		appendTo = cli.Option("-a, --append-file").String("")
 		filename = cli.NamedArg("FILE").String(".")
 	)
 	cli.Parse()
@@ -82,27 +83,37 @@ func main() {
 	}
 
 	// create file
-	var result bytes.Buffer
-	fmt.Fprint(&result, "// GENERATED!, DO NOT EDIT!")
-	result.WriteString("\n\n")
-	result.WriteString(pkgline)
-	io.Copy(&result, &buf)
+	var header bytes.Buffer
+	if appendTo == "" {
+		fmt.Fprint(&header, "// GENERATED, DO NOT EDIT!")
+		header.WriteString("\n\n")
+		header.WriteString(pkgline)
+	}
+	io.Copy(&header, &buf)
 
 	// format it
-	nice, err := format.Source(result.Bytes())
+	nice, err := format.Source(header.Bytes())
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// write result
 	switch {
-	case saveTo == "":
-		os.Stdout.Write(nice)
-
-	default:
+	case saveTo != "":
 		if err := os.WriteFile(saveTo, nice, 0644); err != nil {
 			log.Fatal(err)
 		}
+
+	case appendTo != "":
+		f, err := os.OpenFile(appendTo, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		f.Write(nice)
+		f.Close()
+
+	default:
+		os.Stdout.Write(nice)
 	}
 }
 
@@ -157,19 +168,4 @@ func MakeGetters(file *ast.File, typeName string) ([]byte, error) {
 	}
 
 	return buf.Bytes(), nil
-}
-
-func receiver(v string) string {
-	return strings.ToLower(v[0:1])
-}
-
-func isPrivate(v string) bool {
-	a := v[0:1]
-	b := strings.ToLower(a)
-	return a == b
-}
-
-func makePublic(v string) string {
-	a := strings.ToUpper(v[0:1])
-	return a + v[1:]
 }
