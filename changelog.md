@@ -5,6 +5,7 @@ be recorded in this file.
 
 ## [unreleased]
 
+- Add type MakeGet
 - Fix field type for non ast.Ident expressions
 
 ## [0.3.0] 2023-07-16
