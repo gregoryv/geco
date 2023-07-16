@@ -68,7 +68,7 @@ func main() {
 
 		for _, file := range pkg.Files {
 			for _, typeName := range typeNames {
-				data, err := MakeSetters(file, typeName)
+				data, err := MakeSetters(fset, file, typeName)
 				if err != nil {
 					continue
 				}
@@ -119,7 +119,7 @@ func main() {
 }
 
 // MakeSetters returns generated set methods for the given type.
-func MakeSetters(file *ast.File, typeName string) ([]byte, error) {
+func MakeSetters(fset *token.FileSet, file *ast.File, typeName string) ([]byte, error) {
 	// find fields
 	var fields []*ast.Field
 	var name string
@@ -157,7 +157,7 @@ func MakeSetters(file *ast.File, typeName string) ([]byte, error) {
 		fmt.Fprint(&buf, "Set")
 		fmt.Fprint(&buf, makePublic(name))
 		fmt.Fprint(&buf, "(v ")
-		fmt.Fprint(&buf, field.Type.(*ast.Ident).Name)
+		format.Node(&buf, fset, field.Type)
 		fmt.Fprint(&buf, ") ")
 		fmt.Fprint(&buf, "{ ")
 		fmt.Fprint(&buf, rcv)

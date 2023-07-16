@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os/exec"
 	"testing"
 
@@ -16,8 +17,9 @@ func Test_mkget(t *testing.T) {
 type Car struct {
 	Name string
 
-	model string
-	make  int
+	model  string
+	make   int
+	output io.Writer
 }
 
 type Boat struct {

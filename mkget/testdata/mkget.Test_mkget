@@ -2,5 +2,6 @@
 
 package main
 
-func (c *Car) Model() string { return c.model }
-func (c *Car) Make() int     { return c.make }
+func (c *Car) Model() string     { return c.model }
+func (c *Car) Make() int         { return c.make }
+func (c *Car) Output() io.Writer { return c.output }

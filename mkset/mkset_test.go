@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os/exec"
 	"testing"
 
@@ -8,7 +9,11 @@ import (
 )
 
 func Test_mkset(t *testing.T) {
-	out, _ := exec.Command("go", "generate", ".").Output()
+	out, err := exec.Command("go", "generate", ".").CombinedOutput()
+	if err != nil {
+		t.Log(string(out))
+		t.Fatal(err)
+	}
 	golden.Assert(t, string(out))
 }
 
@@ -16,8 +21,9 @@ func Test_mkset(t *testing.T) {
 type Car struct {
 	Name string
 
-	model string
-	make  int
+	model  string
+	make   int
+	output io.Writer
 }
 
 type Boat struct {

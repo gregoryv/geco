@@ -68,7 +68,7 @@ func main() {
 
 		for _, file := range pkg.Files {
 			for _, typeName := range typeNames {
-				data, err := MakeGetters(file, typeName)
+				data, err := MakeGetters(fset, file, typeName)
 				if err != nil {
 					continue
 				}
@@ -118,7 +118,7 @@ func main() {
 }
 
 // MakeGetters returns generated getters for the given type.
-func MakeGetters(file *ast.File, typeName string) ([]byte, error) {
+func MakeGetters(fset *token.FileSet, file *ast.File, typeName string) ([]byte, error) {
 	// find fields
 	var fields []*ast.Field
 	var name string
@@ -155,7 +155,7 @@ func MakeGetters(file *ast.File, typeName string) ([]byte, error) {
 		fmt.Fprint(&buf, ") ")
 		fmt.Fprint(&buf, makePublic(name))
 		fmt.Fprint(&buf, "() ")
-		fmt.Fprint(&buf, field.Type.(*ast.Ident).Name)
+		format.Node(&buf, fset, field.Type)
 		fmt.Fprint(&buf, " ")
 		fmt.Fprint(&buf, "{ ")
 		fmt.Fprint(&buf, "return ")

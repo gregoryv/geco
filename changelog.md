@@ -3,6 +3,10 @@
 This project adheres to semantic versioning and all major changes will
 be recorded in this file.
 
+## [unreleased]
+
+- Fix field type for non ast.Ident expressions
+
 ## [0.3.0] 2023-07-16
 
 - Add option --append-file to mkget

@@ -2,7 +2,8 @@
 
 package main
 
-func (c *Car) SetModel(v string) { c.model = v }
-func (c *Car) SetMake(v int)     { c.make = v }
+func (c *Car) SetModel(v string)     { c.model = v }
+func (c *Car) SetMake(v int)         { c.make = v }
+func (c *Car) SetOutput(v io.Writer) { c.output = v }
 
 func (b *Boat) SetColor(v int) { b.color = v }
