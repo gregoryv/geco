@@ -9,8 +9,6 @@ import (
 	"io"
 )
 
-//go:generate mkset -t MakeGet -w gen.go
-//go:generate goimports -w gen.go
 type MakeGet struct {
 	fileSet  *token.FileSet
 	file     *ast.File

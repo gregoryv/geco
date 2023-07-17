@@ -3,6 +3,10 @@
 This project adheres to semantic versioning and all major changes will
 be recorded in this file.
 
+## [unreleased]
+
+- Add command mkfill
+
 ## [0.4.0] 2023-07-16
 
 - Add types MakeGet and MakeSet

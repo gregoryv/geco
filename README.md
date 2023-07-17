@@ -3,5 +3,9 @@ goref - Go refactoring utilities
 ## Quick start
 
     $ go install github.com/gregoryv/goref/...@latest
-    $ mkgetters
 
+## Tools
+
+- [mkget](./mkget)
+- [mkset](./mkset)
+- [mkfill](./mkfill)

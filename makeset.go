@@ -9,7 +9,6 @@ import (
 	"io"
 )
 
-//go:generate mkset -t MakeSet -a gen.go
 type MakeSet struct {
 	fileSet  *token.FileSet
 	file     *ast.File
