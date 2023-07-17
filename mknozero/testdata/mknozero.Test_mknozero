@@ -1,0 +1,17 @@
+// GENERATED, DO NOT EDIT!
+
+package main
+
+// NoZero returns error if any private field is zero
+func (c *Car) NoZero() error {
+	if reflect.ValueOf(c.model).IsZero() {
+		return fmt.Errorf("model not set")
+	}
+	if reflect.ValueOf(c.make).IsZero() {
+		return fmt.Errorf("make not set")
+	}
+	if reflect.ValueOf(c.output).IsZero() {
+		return fmt.Errorf("output not set")
+	}
+	return nil
+}

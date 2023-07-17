@@ -38,7 +38,7 @@ func (m *MakeFill) Run() error {
 
 			if namesEqual && typesEqual {
 				return true
-			} 
+			}
 		}
 		return false
 	}

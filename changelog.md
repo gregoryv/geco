@@ -3,6 +3,10 @@
 This project adheres to semantic versioning and all major changes will
 be recorded in this file.
 
+## [unreleased]
+
+- Add command mknozero
+
 ## [0.5.0] 2023-07-17
 
 - Add command mkfill

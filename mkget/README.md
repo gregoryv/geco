@@ -1,7 +1,7 @@
 mkget generates get methods for private struct fields
 
     $ mkget -h
-    Usage: mkgetters [OPTIONS] [FILE]
+    Usage: mkget [OPTIONS] [FILE]
     
     Options
         -t, --types : ""

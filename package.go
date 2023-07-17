@@ -3,6 +3,7 @@ package goref
 //go:generate mkset -t MakeGet -w gen.go
 //go:generate mkset -t MakeSet -a gen.go
 //go:generate mkset -t MakeFill -a gen.go
+//go:generate mkset -t MakeNoZero -a gen.go
 //go:generate goimports -w gen.go
 
 import "strings"

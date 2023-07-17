@@ -21,3 +21,8 @@ func (m *MakeFill) SetFileSet(v *token.FileSet) { m.fileSet = v }
 func (m *MakeFill) SetFile(v *ast.File)         { m.file = v }
 func (m *MakeFill) SetTypeNames(v []string)     { m.typeNames = v }
 func (m *MakeFill) SetOutput(v io.Writer)       { m.output = v }
+
+func (m *MakeNoZero) SetFileSet(v *token.FileSet) { m.fileSet = v }
+func (m *MakeNoZero) SetFile(v *ast.File)         { m.file = v }
+func (m *MakeNoZero) SetTypeName(v string)        { m.typeName = v }
+func (m *MakeNoZero) SetOutput(v io.Writer)       { m.output = v }
