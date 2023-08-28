@@ -1,4 +1,4 @@
-package goref
+package geco
 
 //go:generate mkset -t MakeGet -w gen.go
 //go:generate mkset -t MakeSet -a gen.go

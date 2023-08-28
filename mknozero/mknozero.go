@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/gregoryv/cmdline"
-	"github.com/gregoryv/goref"
+	"github.com/gregoryv/geco"
 )
 
 func main() {
@@ -68,7 +68,7 @@ func main() {
 
 		for _, file := range pkg.Files {
 			for _, typeName := range typeNames {
-				var c goref.MakeNoZero
+				var c geco.MakeNoZero
 				c.SetOutput(&buf)
 				c.SetFileSet(fset)
 				c.SetFile(file)

@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/gregoryv/cmdline"
-	"github.com/gregoryv/goref"
+	"github.com/gregoryv/geco"
 )
 
 func main() {
@@ -67,7 +67,7 @@ func main() {
 		pkgline = fmt.Sprintf("package %s\n", pkg.Name)
 
 		for _, file := range pkg.Files {
-			var c goref.MakeFill
+			var c geco.MakeFill
 			c.SetOutput(&buf)
 			c.SetFileSet(fset)
 			c.SetFile(file)

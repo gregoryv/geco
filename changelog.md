@@ -5,6 +5,7 @@ be recorded in this file.
 
 ## [unreleased]
 
+- Rename package to geco
 - Add command mknozero
 
 ## [0.5.0] 2023-07-17

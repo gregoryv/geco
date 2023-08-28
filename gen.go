@@ -1,6 +1,6 @@
 // GENERATED, DO NOT EDIT!
 
-package goref
+package geco
 
 import (
 	"go/ast"

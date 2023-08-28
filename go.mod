@@ -1,4 +1,4 @@
-module github.com/gregoryv/goref
+module github.com/gregoryv/geco
 
 go 1.19
 
