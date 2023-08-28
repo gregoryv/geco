@@ -6,6 +6,7 @@ goref - Go refactoring utilities
 
 ## Tools
 
-- [mkget](./mkget)
-- [mkset](./mkset)
 - [mkfill](./mkfill)
+- [mkget](./mkget)
+- [mknozero](./mknozero)
+- [mkset](./mkset)
