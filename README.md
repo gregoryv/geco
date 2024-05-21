@@ -6,6 +6,7 @@ geco - Go code generating utilities
 
 ## Tools
 
+- [mkenum](./mkenum)
 - [mkfill](./mkfill)
 - [mkget](./mkget)
 - [mknozero](./mknozero)

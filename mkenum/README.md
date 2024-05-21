@@ -1,4 +1,6 @@
-mkenum generates enum method for comparable constants
+mkenum generates Enum method for constants
+
+This is useful when working with OpenAPI specifications.
 
     $ mkenum -h
     Usage: mkenum [OPTIONS] [FILE]
