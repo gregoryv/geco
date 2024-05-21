@@ -3,7 +3,7 @@
 This project adheres to semantic versioning and all major changes will
 be recorded in this file.
 
-## [unreleased]
+## [0.6.0] 2024-05-21
 
 - Add command mkenum
 - Rename package to geco
