@@ -2,5 +2,14 @@
 
 package main
 
-func (Weekday) Enum() []any     { ... }
-
+func (Weekday) Enum() []any {
+	return []any{
+		Monday,
+		Tuesday,
+		Wednesday,
+		Thursday,
+		Friday,
+		Saturday,
+		Sunday,
+	}
+}

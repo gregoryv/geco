@@ -5,6 +5,7 @@ be recorded in this file.
 
 ## [unreleased]
 
+- Add command mkenum
 - Rename package to geco
 - Add command mknozero
 

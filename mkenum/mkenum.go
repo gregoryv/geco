@@ -96,6 +96,7 @@ func main() {
 				buf.WriteString("\n")
 				fmt.Fprint(&buf, "}")
 				buf.WriteString("\n")
+				c.Values = c.Values[:0]
 			}
 		}
 	}

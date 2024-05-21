@@ -13,9 +13,38 @@ mkenum generates enum method for comparable constants
 
 Example
 
-    $ mkenum -t Weekday
+Having 
+
+	package main
+    
+    //go:generate mkenum -t Weekday .
+    type Weekday string
+    
+    const (
+            Monday    Weekday = "Monday"
+            Tuesday   Weekday = "Tuesday"
+            Wednesday Weekday = "Wednesday"
+            Thursday  Weekday = "Thursday"
+            Friday    Weekday = "Friday"
+            Saturday  Weekday = "Saturday"
+            Sunday    Weekday = "Sunday"
+    )
+
+
+will result in
+
     // GENERATED, DO NOT EDIT!
     
     package main
     
-    func (Weekday) Enum() []any { ... }
+    func (Weekday) Enum() []any {
+            return []any{
+                    Monday,
+                    Tuesday,
+                    Wednesday,
+                    Thursday,
+                    Friday,
+                    Saturday,
+                    Sunday,
+            }
+    }
